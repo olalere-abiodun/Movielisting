@@ -1,4 +1,10 @@
 import os
+import sys
+from pathlib import Path
+
+# Add the root directory to PYTHONPATH
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 from dotenv import load_dotenv
 import sqlalchemy
 from sqlalchemy import create_engine
