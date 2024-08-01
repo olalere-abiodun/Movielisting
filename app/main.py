@@ -6,6 +6,7 @@ from datetime import datetime
 from . import crud, schema, model, auth
 from .auth import pwd_context, oauth2_scheme, authenticate_user, create_access_token, get_current_user
 import sqlalchemy
+
 from .database import SessionLocal, engine, Base, get_db
 from typing import Optional
 from passlib.context import CryptContext
@@ -128,15 +129,19 @@ async def rate_movie(rating: schema.RatingCreate, db: Session = Depends(get_db),
     if not movie_rated:
         raise HTTPException(status_code=404, detail="Movie not found")
     new_rating = crud.rate_movie(db, movie_id= movie_rated.movie_id, rating=rating.rating, user_id=current_user.user_id)
-    logger.info(f"{current_user.user_id} rated movie '{movie_title}' with {rating.rating}")
+    logger.info(f"{current_user.username} rated movie '{rating.movie_title}' with {rating.rating}")
     return new_rating
 
 # Get all ratings for a movie
 
-@app.get('/ratings/{movie_title}', response_model=List[schema.RatingResponse])
+@app.get('/ratings/{movie_title}', response_model=schema.RatingResponse)
 async def get_movie_ratings(movie_title: str, db: Session = Depends(get_db)):
     movie_rated = db.query(model.Movies).filter(model.Movies.title == movie_title).first()
+    if movie_rated is None:
+        logger.warning(f"Movie {movie_title} not found")
+        raise HTTPException(status_code=404, detail="Movie not found")
     movie_ratings = crud.get_ratings_for_movie(db, movie_id = movie_rated.movie_id)
+    logger.info(f"All ratings for movie '{movie_title}' fetched successfully")
     return movie_ratings
 
 # Comment on a movie (authenticated access)

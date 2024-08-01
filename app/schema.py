@@ -1,6 +1,7 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, validator
 from datetime import datetime, date
 from typing import Optional
+from decimal import Decimal, ROUND_HALF_UP
 
 class UserBase(BaseModel):
     user_id : int
@@ -75,9 +76,14 @@ class RatingCreate(BaseModel):
     created_at: date
 
 class RatingResponse(BaseModel):
-    username: str
     title: str
-    rating: int
+    rating: Decimal
+
+    @validator('rating', pre=True, always=True)
+    def round_rating(cls, value):
+        if isinstance(value, (float, str)):
+            value = Decimal(value)
+        return value.quantize(Decimal('0.0'), rounding=ROUND_HALF_UP)
 
 
     model_config = ConfigDict(from_attributes=True)

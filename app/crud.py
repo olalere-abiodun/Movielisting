@@ -4,6 +4,7 @@ from .auth import pwd_context
 from . import model, schema, auth
 from datetime import datetime
 import sqlalchemy
+from sqlalchemy import func
 
 # User Crud start
 def create_user(db: Session, user: schema.UserCreate, hashed_password: str):
@@ -125,17 +126,16 @@ def rate_movie(db: Session, movie_id, rating: int, user_id: str):
 
 def get_ratings_for_movie(db: Session, movie_id: str):
     ratings = db.query(
-    model.Rating.rating,
-    model.User.username,
-    model.Movies.title
-    ).join(
-    model.User, model.Rating.user_id == model.User.user_id
-    ).join(
-    model.Movies, model.Rating.movie_id == model.Movies.movie_id
+        func.avg(model.Rating.rating).label('rating'),
+        model.Movies.title
+        ).join(
+            model.Movies, model.Rating.movie_id == model.Movies.movie_id
     ).filter(
     model.Movies.movie_id == movie_id
-    ).all()
-    return ratings
+    ).group_by(
+        model.Movies.title
+    ).first()
+    return (ratings)
     # return db.query(model.Rating).filter(model.Rating.movie_id == movie_id).all()
 
 # Rating a movie End
