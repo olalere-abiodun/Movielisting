@@ -2,31 +2,6 @@
 
 This project is a movie listing application built with FastAPI. It includes endpoints for listing, creating, and managing movies, using SQLAlchemy for database interactions and Pydantic for request and response validation. The API documentation is auto-generated using FastAPI's built-in OpenAPI/Swagger documentation.
 
-## Directory Structure
-
-project-root/
-│
-├── app/
-| ├── __init__.py
-│ ├── auth.py
-│ ├── crud.py
-│ ├── database.py
-│ ├── main.py
-│ ├── model.py
-│ ├── schema.py
-│
-├── my_logging/
-│ ├── logger.py
-│ └── init.py
-│
-├── test/
-│ ├── test_app.py
-│ └── init.py
-│
-├── .env
-├── README.md
-└── requirements.txt
-
 
 ## 1. Setting Up the Application
 
@@ -34,7 +9,7 @@ project-root/
 
 Install the dependencies using pip:
 
-```bash
+```bash```
 pip install -r requirements.txt
 
 
@@ -77,12 +52,12 @@ Create a `.env` file and add the required environment variables (e.g., database 
 
 To run the application, use uvicorn
 
-```bash
+```bash```
 uvicorn app.main:app --reload
 
 ##  4. Testting the application
 
-```bash
+```bash```
 pytest
 
 
