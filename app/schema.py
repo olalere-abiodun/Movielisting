@@ -43,7 +43,7 @@ class MovieBase(BaseModel):
     title: str
     genre: str
     description: str
-    release_date: date
+    release_date: str
 
 class Movie(MovieBase):
     movie_id : int
@@ -51,12 +51,21 @@ class Movie(MovieBase):
     model_config = ConfigDict(from_attributes=True)
 
 class MovieUpload(MovieBase):
-    pass
+    video_data: bytes
+    coverimage_data: bytes
+
+    model_config = ConfigDict(from_attributes=True)
+
+class MovieUpload_files(MovieUpload):
+    
+
+    model_config = ConfigDict(from_attributes=True)
 
 class MovieResponse(BaseModel):
-    movie_id: int
+    # movie_id: int
     title: str
     genre: str
+    # coverimage_data: Optional [str] = None
     description: str
     release_date: Optional[date] = None
 

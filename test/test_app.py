@@ -112,6 +112,9 @@ def test_list_a_movie(test_db):
     assert data["title"] == "Test Movie"
     assert data["genre"] == "Sci - Fi"
 
+    assert "coverimage_data" in data, f"Cover image is empty"
+
+
 # Get movie 5
 
 def test_get_all_movie (test_db):
@@ -124,6 +127,9 @@ def test_get_all_movie (test_db):
     assert data[0]["genre"] == "Drama"
     assert data[0]["description"] == "A test movie description"
     assert data[0]["release_date"] == "2024-07-23"
+
+    assert "coverimage_data" in data, f"Cover image is empty"
+
 # 6
 def test_get_movie_by_title (test_db):
 
@@ -136,6 +142,8 @@ def test_get_movie_by_title (test_db):
     assert data["genre"] == "Drama"
     assert data["description"] == "A test movie description"
     assert data["release_date"] == "2024-07-23"
+
+    assert "coverimage_data" in data, f"Cover image is empty"
 
 # 7
 def test_update_movie_by_title(test_db):

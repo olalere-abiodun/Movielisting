@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Boolean, String, Integer, ForeignKey, TIMESTAMP, Date, Text, CheckConstraint, func
+from sqlalchemy import Column, Boolean, String,LargeBinary, Integer, ForeignKey, TIMESTAMP, Date, Text, CheckConstraint, func
 from sqlalchemy.orm import relationship
 
-from .database import Base 
+from app.database import Base 
 
 class User(Base):
     __tablename__ = 'users'
@@ -26,7 +26,11 @@ class Movies(Base):
     title = Column(String(255), nullable=False)
     genre = Column(String(255), nullable=False)
     description = Column(Text, nullable=False)
-    release_date = Column(Date, nullable=False)
+    # addition
+    video_data = Column(LargeBinary)
+    coverimage_data = Column(LargeBinary)
+    release_date = Column(String, nullable=False)
+
     user_id = Column(Integer, ForeignKey('users.user_id'))
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())

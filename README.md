@@ -23,13 +23,13 @@ Create a `.env` file and add the required environment variables (e.g., database 
 
 ## 2.  Endpoints
 
-###User Endpoints:
+### User Endpoints:
 
 * POST /signup/: Creates a new user (signup functionality).
 * POST /login/: Authenticates a user and generates an access token (login functionality).
 * PUT /reset_password/{email}: Resets the password for a user with the provided email (requires current user to be logged in and the email to match).
 
-###Movie Endpoints:
+### Movie Endpoints:
 
 * POST /List_a_Movie/: Uploads a new movie (requires user to be logged in).
 * GET /movies/: Retrieves all movies (public endpoint).
@@ -37,7 +37,7 @@ Create a `.env` file and add the required environment variables (e.g., database 
 * PUT /update_movie/{movie_title}: Updates a movie by its title (requires user to be logged in and the movie to be uploaded by the same user).
 * DELETE /delete_movie/{movie_title}: Deletes a movie by its title (requires user to be logged in and the movie to be uploaded by the same user).
 
-###Movie Rating Endpoints:
+### Movie Rating Endpoints:
 
 * POST /rating/: Rates a movie (requires user to be logged in).
 * GET /ratings/{movie_title}: Retrieves all ratings for a movie (public endpoint).
