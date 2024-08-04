@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 @app.get("/")
 async def root():
     logger.info("App accessed")
-    return {"message": "Welcome to my ALTSCHOOL Capstone project"}
+    return {"message": "Welcome to my Movie Listing API"}
 
 # User EndPoint Start
 @app.post("/signup/", response_model=schema.UserResponse)
