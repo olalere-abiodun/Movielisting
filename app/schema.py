@@ -43,7 +43,7 @@ class MovieBase(BaseModel):
     title: str
     genre: str
     description: str
-    release_date: str
+    release_date: Optional[date] = None
 
 class Movie(MovieBase):
     movie_id : int
@@ -93,7 +93,7 @@ class RatingResponse(BaseModel):
     def check_rating(cls, value):
         if value < 0 or value > 5:
             raise ValueError('Rating must be between 0 and 5')
-        return value
+        return round(value, 1)
 
 
     model_config = ConfigDict(from_attributes=True)
@@ -103,12 +103,12 @@ class CommentBase(BaseModel):
     parent_comment_id : int
     user_id: int
     movie_id: int
-    content: str
+    comment: str
     created_at: datetime
     updated_at: datetime
 
 class PostComment(BaseModel):
-    content: str
+    comment: str
     created_at: date
 
     model_config = ConfigDict(from_attributes=True)
@@ -116,7 +116,7 @@ class PostComment(BaseModel):
 class ParentCommentResponse(BaseModel):
     username: str
     movie_title: str
-    content: str
+    comment: str
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -124,18 +124,18 @@ class CommentReplyBase(BaseModel):
     parent_comment_id : int
     user_id: int
     movie_id: int
-    content: str
+    comment: str
     created_at: datetime
 
 class PostReply(BaseModel):
-    content: str
+    comment: str
     
 
 class CommentReplyResponse(BaseModel):
     reply_id: int
     user_id: int
     parent_comment_id: int
-    content: str
+    comment: str
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
