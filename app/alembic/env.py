@@ -1,5 +1,6 @@
 import os
 import sys
+from os.path import abspath, dirname
 from pathlib import Path
 
 from dotenv import load_dotenv
