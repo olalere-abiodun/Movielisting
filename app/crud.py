@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-from app import model, schema, auth
-from app.auth import pwd_context
+from . import model, schema, auth
+from .auth import pwd_context
 from datetime import datetime
 import sqlalchemy
 from sqlalchemy import func
