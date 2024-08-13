@@ -103,12 +103,12 @@ class CommentBase(BaseModel):
     parent_comment_id : int
     user_id: int
     movie_id: int
-    comment: str
+    content: str
     created_at: datetime
     updated_at: datetime
 
 class PostComment(BaseModel):
-    comment: str
+    content: str
     created_at: date
 
     model_config = ConfigDict(from_attributes=True)
@@ -116,7 +116,7 @@ class PostComment(BaseModel):
 class ParentCommentResponse(BaseModel):
     username: str
     movie_title: str
-    comment: str
+    content: str
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -124,18 +124,18 @@ class CommentReplyBase(BaseModel):
     parent_comment_id : int
     user_id: int
     movie_id: int
-    comment: str
+    content: str
     created_at: datetime
 
 class PostReply(BaseModel):
-    comment: str
+    content: str
     
 
 class CommentReplyResponse(BaseModel):
     reply_id: int
     user_id: int
     parent_comment_id: int
-    comment: str
+    content: str
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
