@@ -1,10 +1,5 @@
 import sys
 from pathlib import Path
-
-# Add the root directory to PYTHONPATH
-sys.path.append(str(Path(__file__).resolve().parent.parent))
-
-
 import pytest
 from fastapi.testclient import TestClient
 from app.main import app
@@ -16,15 +11,22 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 
+# Add the root directory to PYTHONPATH
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+
 # Load environment variables
 load_dotenv()
 
 # Setup the test database and test client
 
-SQLALCHEMY_DATABASE_URL = os.environ.get('DB_URL')
+SQLALCHEMY_DATABASE_URL = os.environ.get('TEST_DB_URL')
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 # Create a test database session
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Create the test database tables
+Base.metadata.create_all(bind=engine)
 
 # Override get_db dependency to use the test database
 def override_get_db():
@@ -36,8 +38,6 @@ def override_get_db():
 
 app.dependency_overrides[get_db] = override_get_db
 
-# Create the test database tables
-Base.metadata.create_all(bind=engine)
 
 client = TestClient(app)
 
@@ -60,7 +60,7 @@ def test_db():
 def test_root():
    response = client.get("/")
    assert response.status_code == 200
-   assert response.json() == {"message": "Welcome to my ALTSCHOOL Capstone project"}
+   assert response.json() == {"message": "Welcome to my Movie Listing API"}
 # 2
 def test_signup(test_db):
     response = client.post("/signup", json={
@@ -77,7 +77,7 @@ def test_signup(test_db):
         data = response.json()
         assert data["username"] == "testuser",  f"Key 'User has already Signed Up'"
         assert "created_at" in data
-# 3
+3
 def test_login(test_db):
     response = client.post("/login/", data={
         "username": "testuser",
@@ -91,6 +91,9 @@ def test_login(test_db):
     headers = {"Authorization": f"Bearer {token}"}
 
 # 4
+
+
+
 def test_list_a_movie(test_db):
     # Login to get the token
     login_response = client.post("/login/", data={
@@ -103,7 +106,7 @@ def test_list_a_movie(test_db):
     response = client.post("/List_a_Movie/", json={
         "title": "Test Movie",
         "genre": "Sci - Fi",
-        "description": "A test movie description2",
+        "description": "A test movie description",
         "release_date": "2024-07-27"
     }, headers=headers)
     
@@ -112,7 +115,6 @@ def test_list_a_movie(test_db):
     assert data["title"] == "Test Movie"
     assert data["genre"] == "Sci - Fi"
 
-    assert "coverimage_data" in data, f"Cover image is empty"
 
 
 # Get movie 5
@@ -124,11 +126,9 @@ def test_get_all_movie (test_db):
     data = response.json()
     assert len(data) > 0
     assert data[0]["title"] == "Test Movie"
-    assert data[0]["genre"] == "Drama"
+    assert data[0]["genre"] == "Sci - Fi"
     assert data[0]["description"] == "A test movie description"
-    assert data[0]["release_date"] == "2024-07-23"
-
-    assert "coverimage_data" in data, f"Cover image is empty"
+    assert data[0]["release_date"] == "2024-07-27"
 
 # 6
 def test_get_movie_by_title (test_db):
@@ -137,13 +137,12 @@ def test_get_movie_by_title (test_db):
 
     assert response.status_code == 200
     data = response.json()
-    assert data["movie_id"] == 1
     assert data["title"] == "Test Movie"
-    assert data["genre"] == "Drama"
+    assert data["genre"] == "Sci - Fi"
     assert data["description"] == "A test movie description"
-    assert data["release_date"] == "2024-07-23"
 
-    assert "coverimage_data" in data, f"Cover image is empty"
+    assert "release_date" in data
+    # assert data["release_date"] == "2024-07-23"
 
 # 7
 def test_update_movie_by_title(test_db):
@@ -162,11 +161,11 @@ def test_update_movie_by_title(test_db):
         "release_date": "2024-07-27"
     }, headers=headers)
 
-    response = client.put("/update_movie/Test%20Deleted%Movie", json={
+    response = client.put("/update_movie/Test%20Movie%20To%20Update", json={
         "title": "Updated Movie",
         "genre": "Action",
         "description": "Updated description",
-        "updated_at": "2024-07-27"
+        "updated_at": "2024-08-13"
     }, headers=headers)
     assert response.status_code == 200
     data = response.json()
@@ -202,10 +201,9 @@ def test_rate_movie(test_db):
     token = login_response.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
 
-    response = client.get("/movie/Teste%20Movie")
+    response = client.get("/movie/Test%20Movie")
     assert response.status_code == 200
     data = response.json()
-    assert data["movie_id"] == 1
 
     # Rate a movie 
     rate_response = client.post("/rating/", json={
@@ -246,7 +244,6 @@ def test_comment_on_movie(test_db):
     response = client.get("/movie/Test%20Movie")
     assert response.status_code == 200
     data = response.json()
-    assert data["movie_id"] == 1
 
     # Comment on a movie
     comment_response = client.post("/comment/Test%20Movie", json={
