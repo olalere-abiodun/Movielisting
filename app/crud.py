@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
-import model, schema, auth
-from auth import pwd_context
+from . import model, schema, auth
+from .auth import pwd_context
 from datetime import datetime
 import sqlalchemy
 from sqlalchemy import func
@@ -49,29 +49,13 @@ def update_user_password(db: Session, email: str, new_password: str):
 # Movie Crud start
 
 # 1. List a Movie
-def upload_new_movie(db: Session, movie: schema.MovieUpload, user_id: str = None):
-    db_movie = model.Movies(
-        title = movie.title,
-        genre = movie.genre,
-        description = movie.description,
-        video_data = movie.video_data,
-        coverimage_data = movie.coverimage_data,
-        release_date = movie.release_date,
-        user_id = user_id       
-        
-    
-        
-        )
-    db.add(db_movie)
-    db.commit()
-    db.refresh(db_movie)
-    return db_movie
-
-# def Upload_new_movie(db: Session, movie: schema.MovieUpload, user_id: str = None):
+# def upload_new_movie(db: Session, movie: schema.MovieUpload, user_id: str = None):
 #     db_movie = model.Movies(
 #         title = movie.title,
 #         genre = movie.genre,
 #         description = movie.description,
+#         video_data = movie.video_data,
+#         coverimage_data = movie.coverimage_data,
 #         release_date = movie.release_date,
 #         user_id = user_id       
         
@@ -82,6 +66,22 @@ def upload_new_movie(db: Session, movie: schema.MovieUpload, user_id: str = None
 #     db.commit()
 #     db.refresh(db_movie)
 #     return db_movie
+
+def Upload_new_movie(db: Session, movie: schema.MovieUpload, user_id: str = None):
+    db_movie = model.Movies(
+        title = movie.title,
+        genre = movie.genre,
+        description = movie.description,
+        release_date = movie.release_date,
+        user_id = user_id       
+        
+    
+        
+        )
+    db.add(db_movie)
+    db.commit()
+    db.refresh(db_movie)
+    return db_movie
 
 # View all Movie (Public)
 

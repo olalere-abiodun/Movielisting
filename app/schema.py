@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, validator
+from pydantic import BaseModel, ConfigDict, field_validator
 from datetime import datetime, date
 from typing import Optional
 from decimal import Decimal, ROUND_HALF_UP
@@ -51,8 +51,9 @@ class Movie(MovieBase):
     model_config = ConfigDict(from_attributes=True)
 
 class MovieUpload(MovieBase):
-    video_data: bytes
-    coverimage_data: bytes
+    pass
+    # video_data: bytes
+    # coverimage_data: bytes
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -88,11 +89,11 @@ class RatingResponse(BaseModel):
     title: str
     rating: Decimal
 
-    @validator('rating', pre=True, always=True)
-    def round_rating(cls, value):
-        if isinstance(value, (float, str)):
-            value = Decimal(value)
-        return value.quantize(Decimal('0.0'), rounding=ROUND_HALF_UP)
+    @field_validator('rating', mode='before')
+    def check_rating(cls, value):
+        if value < 0 or value > 5:
+            raise ValueError('Rating must be between 0 and 5')
+        return value
 
 
     model_config = ConfigDict(from_attributes=True)

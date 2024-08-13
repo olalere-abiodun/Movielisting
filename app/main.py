@@ -3,13 +3,13 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
-import crud, schema, model, auth, database
-from auth import pwd_context, oauth2_scheme, authenticate_user, create_access_token, get_current_user
+from . import crud, schema, model, auth, database
+from .auth import pwd_context, oauth2_scheme, authenticate_user, create_access_token, get_current_user
 import sqlalchemy
 from datetime import date
 from io import BytesIO
 import base64
-from database import SessionLocal, engine, Base, get_db
+from .database import SessionLocal, engine, Base, get_db
 from typing import Optional
 from passlib.context import CryptContext
 from my_logging.logger import get_logger
@@ -75,46 +75,46 @@ async def reset_password(email: str, new_password: schema.PasswordReset, db: Ses
 
 # Movie EndPoint Start
 
-@app.post("/List_a_Movie/", response_model=schema.MovieResponse)
-async def list_a_movie(
-    
-    title: str = Form(...),
-    genre: str = Form(...),
-    description: str = Form(...),
-    videofile: UploadFile = File(...),
-    coverfile: UploadFile = File(...),
-    release_date: str = Form(...),
-    db: Session = Depends(get_db),
-    posted_by: schema.User = Depends(get_current_user)
-    ):
-    if videofile.content_type != "video/mp4":
-        raise HTTPException(status_code=400, detail="Invalid file type. Only MP4 files are allowed.")
-    if coverfile.content_type not in ["image/jpeg", "image/png"]:
-        raise HTTPException(status_code=400, detail="Invalid file type. Only jpeg or png files are allowed.")
-    
-    videofile_data = await videofile.read()
-    coverfile_data = await coverfile.read()
-
-    movie_upload = schema.MovieUpload(
-        title=title,
-        genre=genre,
-        description=description,
-        video_data=videofile_data,
-        coverimage_data=coverfile_data,
-        release_date=release_date,
-        user_id=posted_by.user_id,
-
-    )
-
-    new_movie = crud.upload_new_movie (db, movie= movie_upload, user_id = posted_by.user_id )
-    logger.info(f'{posted_by.username} listed a new movie {new_movie.title}')
-    return new_movie
-
 # @app.post("/List_a_Movie/", response_model=schema.MovieResponse)
-# async def list_a_movie(movie: schema.MovieUpload, db: Session = Depends(get_db), posted_by: schema.User = Depends(get_current_user)):
-#     new_movie = crud.Upload_new_movie (db, movie= movie, user_id = posted_by.user_id )
-#     logger.info(f'{posted_by.username} listed a new movie')
+# async def list_a_movie(
+    
+#     title: str = Form(...),
+#     genre: str = Form(...),
+#     description: str = Form(...),
+#     videofile: UploadFile = File(...),
+#     coverfile: UploadFile = File(...),
+#     release_date: str = Form(...),
+#     db: Session = Depends(get_db),
+#     posted_by: schema.User = Depends(get_current_user)
+#     ):
+#     if videofile.content_type != "video/mp4":
+#         raise HTTPException(status_code=400, detail="Invalid file type. Only MP4 files are allowed.")
+#     if coverfile.content_type not in ["image/jpeg", "image/png"]:
+#         raise HTTPException(status_code=400, detail="Invalid file type. Only jpeg or png files are allowed.")
+    
+#     videofile_data = await videofile.read()
+#     coverfile_data = await coverfile.read()
+
+#     movie_upload = schema.MovieUpload(
+#         title=title,
+#         genre=genre,
+#         description=description,
+#         video_data=videofile_data,
+#         coverimage_data=coverfile_data,
+#         release_date=release_date,
+#         user_id=posted_by.user_id,
+
+#     )
+
+#     new_movie = crud.upload_new_movie (db, movie= movie_upload, user_id = posted_by.user_id )
+#     logger.info(f'{posted_by.username} listed a new movie {new_movie.title}')
 #     return new_movie
+
+@app.post("/List_a_Movie/", response_model=schema.MovieResponse)
+async def list_a_movie(movie: schema.MovieUpload, db: Session = Depends(get_db), posted_by: schema.User = Depends(get_current_user)):
+    new_movie = crud.Upload_new_movie (db, movie= movie, user_id = posted_by.user_id )
+    logger.info(f'{posted_by.username} listed a new movie')
+    return new_movie
 
 @app.get("/movies/", response_model=List[schema.MovieResponse])
 async def get_all_movies(db: Session = Depends(get_db), offset: int = 0, limit: int = 10):
