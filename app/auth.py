@@ -9,8 +9,8 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 import sqlalchemy
-from . import crud
-from .database import SessionLocal, get_db
+from app import crud
+from app.database import SessionLocal, get_db
 
 
 

@@ -3,13 +3,13 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
-from . import crud, schema, model, auth, database
-from .auth import pwd_context, oauth2_scheme, authenticate_user, create_access_token, get_current_user
+from app import crud, schema, model, auth, database
+from app.auth import pwd_context, oauth2_scheme, authenticate_user, create_access_token, get_current_user
 import sqlalchemy
 from datetime import date
 from io import BytesIO
 import base64
-from .database import SessionLocal, engine, Base, get_db
+from app.database import SessionLocal, engine, Base, get_db
 from typing import Optional
 from passlib.context import CryptContext
 from my_logging.logger import get_logger
