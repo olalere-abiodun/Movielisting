@@ -39,7 +39,7 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 # Add the parent directory of the 'app' directory to sys.path
 sys.path.append(abspath(dirname(dirname(__file__))))
-from app.model import Base
+from model import Base
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
