@@ -1,8 +1,7 @@
 import os
 import sys
 from pathlib import Path
-# Add the parent directory of `app` to sys.path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from dotenv import load_dotenv
 # Add the root directory to PYTHONPATH for env file
 dotenv_path = Path(__file__).resolve().parent.parent.parent / '.env'
@@ -37,8 +36,10 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
+# Add the parent directory of the 'app' directory to sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from model import Base
+from app.model import Base
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
